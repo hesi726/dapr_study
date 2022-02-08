@@ -25,7 +25,7 @@ namespace E2_FrontEnd.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> PostAsync(string state)
+        public async Task<ActionResult> PostAsync()
         {
             await _daprClient.SaveStateAsync<string>("statestore", "guid", Guid.NewGuid().ToString(), new StateOptions { Consistency = ConsistencyMode.Strong });
             return Ok("done");
@@ -60,11 +60,10 @@ namespace E2_FrontEnd.Controllers
         // 根据绑定获取并修改值，健值name从路由模板获取
         [HttpPost("withbinding/{name}")]
         public async Task<ActionResult> PostWithBindingAsync([FromState("statestore", "name")] StateEntry<string> state)
-        {
+        {                        
             state.Value = Guid.NewGuid().ToString();
             return Ok(await state.TrySaveAsync());
         }
-
 
         // 获取多个个值
         [HttpGet("list")]

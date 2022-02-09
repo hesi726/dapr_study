@@ -1,46 +1,68 @@
-## »ù±¾¸ÅÄî
+## åŸºæœ¬æ¦‚å¿µ
 
-### SideCar 
+https://www.cnblogs.com/chenyishi/p/15324032.html
 
-* DaprÖĞ£¬Ã¿¸ö·şÎñ£¬Ã¿¸öÔËĞĞµÄ·şÎñ¶¼»áÔËĞĞÒ»¸öSidecar£»
-* DaprµÄ·şÎñ¼äÍ¨ĞÅ£¬·şÎñÓë¸÷ÖĞ¼ä¼şµÄÍ¨ĞÅ¶¼Í¨¹ıSidecarÀ´Í¨ĞÅ£¬
-* ÎÒÃÇµÄ´úÂëÀïĞèÒªµ÷ÓÃDaprÌá¹©·ÃÎÊSidecarµÄAPI£¬¼´¿ÉÍê³É·şÎñ¼äÍ¨ĞÅ£¬×´Ì¬´æ´¢£¬·şÎñ¼à¿ØµÈ¹¦ÄÜ
-* SideCar  
-  1. Ò»¸ö¶ÀÁ¢³ÌĞò£¬×÷ÎªÔÚDaprÖĞÔËĞĞµÄNetCore³ÌĞòµÄ´úÀí£¬Í¨¹ı HTTP »òÕß GPRC È¥·ÃÎÊNetCore·şÎñ»òÕßÆäËûDaprÖ§³ÖµÄ×é¼ş(ÀıÈçRedis)
-  2. NetCoreºÍÆäËûNetCore£¨»òÕßDapr×é¼ş)Ö»ÄÜÍ¨¹ı SideCar½øĞĞÏà»¥·ÃÎÊ.
+* __æ‰€æœ‰Daprç¨‹åºéƒ½å¯ä»¥é€šè¿‡ä»»æ„ä¸€ä¸ªSideCarç»Ÿä¸€è®¿é—®.__
+  > ä¾‹å¦‚ï¼Œå¦‚ä¸‹2ä¸ªä¾‹å­ç¨‹åº, backendè¿è¡Œäº 3511ç«¯å£ï¼Œfrontendè¿è¡Œäº 3500ç«¯å£,
+  > dapr run --dapr-http-port 3511 --app-port 5000  --app-id backend dotnet  .\bin\Debug\net6.0\E2_BackEnd.dll
+  > dapr run --dapr-http-port 3500 --app-port 5001  --app-id frontend dotnet  .\bin\Debug\net6.0\E2_FrontEnd.dll
+  >
 
-  ÀıÈç,ÔÚ DaprÖĞÔËĞĞÈçÏÂ³ÌĞò,Ôò
-```cmd  
+  * http://localhost:3500/v1.0/invoke/backend/method/WeatherForecast
+    > å¯ä»¥è®¿é—®åˆ°ç›‘å¬åœ¨ 3511ç«¯å£çš„ backend ä¸­çš„ WeatherForecast æ¥å£.
+    >
+  * http://localhost:3511/v1.0/invoke/frontend/method/actor/paid/126
+    > å¯ä»¥è®¿é—®åˆ°ç›‘å¬åœ¨ 3500 ç«¯å£çš„ frontend ä¸­çš„ actor æ§åˆ¶å™¨ä¸­çš„ paid action.
+    >
+* __Dapré»˜è®¤ä½¿ç”¨3500ç«¯å£__
+  * å¤–éƒ¨å®¢æˆ·ç«¯ä½¿ç”¨ ActorProxy æˆ–è€… DaprClientæ—¶ï¼Œé»˜è®¤ä½¿ç”¨ 3500ç«¯å£ï¼Œ
+    * å› æ­¤ï¼Œè‡³å°‘åº”è¯¥å­˜åœ¨ä¸€ä¸ªç›‘å¬åœ¨ 3500 ç«¯å£çš„ Daprç¨‹åº
+  * ç¨‹åºè¿è¡Œé€šè¿‡Daprè¿è¡Œæ—¶, ä½¿ç”¨ ActorProxy æˆ–è€… DaprClientæ—¶ï¼Œå¯ä»¥æ­£å¸¸è§£æ,ä¸éœ€è¦ 3500ç«¯å£.
+
+### SideCar
+
+* Daprä¸­ï¼Œæ¯ä¸ªæœåŠ¡ï¼Œæ¯ä¸ªè¿è¡Œçš„æœåŠ¡éƒ½ä¼šè¿è¡Œä¸€ä¸ªSidecarï¼›
+* Daprçš„æœåŠ¡é—´é€šä¿¡ï¼ŒæœåŠ¡ä¸å„ä¸­é—´ä»¶çš„é€šä¿¡éƒ½é€šè¿‡Sidecaræ¥é€šä¿¡ï¼Œ
+* æˆ‘ä»¬çš„ä»£ç é‡Œéœ€è¦è°ƒç”¨Dapræä¾›è®¿é—®Sidecarçš„APIï¼Œå³å¯å®ŒæˆæœåŠ¡é—´é€šä¿¡ï¼ŒçŠ¶æ€å­˜å‚¨ï¼ŒæœåŠ¡ç›‘æ§ç­‰åŠŸèƒ½
+* SideCar
+
+  1. ä¸€ä¸ªç‹¬ç«‹ç¨‹åºï¼Œä½œä¸ºåœ¨Daprä¸­è¿è¡Œçš„NetCoreç¨‹åºçš„ä»£ç†ï¼Œé€šè¿‡ HTTP æˆ–è€… GPRC å»è®¿é—®NetCoreæœåŠ¡æˆ–è€…å…¶ä»–Dapræ”¯æŒçš„ç»„ä»¶(ä¾‹å¦‚Redis)
+  2. NetCoreå’Œå…¶ä»–NetCoreï¼ˆæˆ–è€…Daprç»„ä»¶)åªèƒ½é€šè¿‡ SideCarè¿›è¡Œç›¸äº’è®¿é—®.
+
+  ä¾‹å¦‚,åœ¨ Daprä¸­è¿è¡Œå¦‚ä¸‹ç¨‹åº,åˆ™
+
+```cmd
   dapr run --dapr-http-port 3511 --app-port 5000  --app-id backend dotnet  .\E2_BackEnd\bin\Debug\net6.0\E2_BackEnd.dll
 ```
-´ËNetCore³ÌĞò¶ÔÓ¦µÄSideCar³ÌĞò½«Îª
+
+æ­¤NetCoreç¨‹åºå¯¹åº”çš„SideCarç¨‹åºå°†ä¸º
+
 ```
 daprd --app-id backend  --app-port 5000  --dapr-http-port 3511 --dapr-grpc-port 1247 --config c:\Users\dai_wei\.dapr\config.yaml --app-protocal http --profile-port -1 --log-level info --app-max-concurrency -1 --placement-host-addr
 ```
 
-### Æß´óºËĞÄ×é¼ş
+### ä¸ƒå¤§æ ¸å¿ƒç»„ä»¶
 
-1. ·şÎñµ÷ÓÃ
-> ÒªÊ¹ÓÃ Dapr À´µ÷ÓÃÓ¦ÓÃ³ÌĞò£¬ÇëÔÚÈÎÒâ Dapr ÊµÀıÉÏÊ¹ÓÃ invoke Õâ¸öAPI¡£ 
-> sidecar ±à³ÌÄ£ĞÍ¹ÄÀøÃ¿¸öÓ¦ÓÃ³ÌĞòÓë×Ô¼ºµÄ Dapr ÊµÀı¶Ô»°¡£ Dapr ÊµÀı»áÏà»¥·¢ÏÖ²¢½øĞĞÍ¨ĞÅ¡£
+1. æœåŠ¡è°ƒç”¨
 
-Dapr·şÎñµ÷ÓÃApi:  
-http://localhost:3500/v1.0/invoke/backend/method/neworder 
+> è¦ä½¿ç”¨ Dapr æ¥è°ƒç”¨åº”ç”¨ç¨‹åºï¼Œè¯·åœ¨ä»»æ„ Dapr å®ä¾‹ä¸Šä½¿ç”¨ invoke è¿™ä¸ªAPIã€‚
+> sidecar ç¼–ç¨‹æ¨¡å‹é¼“åŠ±æ¯ä¸ªåº”ç”¨ç¨‹åºä¸è‡ªå·±çš„ Dapr å®ä¾‹å¯¹è¯ã€‚ Dapr å®ä¾‹ä¼šç›¸äº’å‘ç°å¹¶è¿›è¡Œé€šä¿¡ã€‚
 
-backend ÊÇ appid µÄÃû³Æ  
-neworder ÊÇ backend ÏÂÃæÖĞÄ³Ò»¸ö¿ØÖÆÆ÷.  
+DapræœåŠ¡è°ƒç”¨Api:
+http://localhost:3500/v1.0/invoke/backend/method/neworder
 
-2. ×´Ì¬¹ÜÀí£¨Ä¬ÈÏÊ¹ÓÃRedis)
-> DaprµÄ×´Ì¬´æ´¢×é¼şÖ§³Ö¿É²å°Î£¬¿ÉÒÔ²»ÓÃ¸Ä´úÂë¶øËæÒâÌæ»»
+backend æ˜¯ appid çš„åç§°neworder æ˜¯ backend ä¸‹é¢ä¸­æŸä¸€ä¸ªæ§åˆ¶å™¨.
 
+2. çŠ¶æ€ç®¡ç†ï¼ˆé»˜è®¤ä½¿ç”¨Redis)
 
-Dapr×´Ì¬Api:
-http://localhost:3500/v1.0/state/myStateStore/planet »ñÈ¡ planet Ëù´æ·ÅµÄ×´Ì¬Öµ  
+> Daprçš„çŠ¶æ€å­˜å‚¨ç»„ä»¶æ”¯æŒå¯æ’æ‹”ï¼Œå¯ä»¥ä¸ç”¨æ”¹ä»£ç è€Œéšæ„æ›¿æ¢
 
-ÉÏÃæurlÖĞ£¬ myStateStore ÊÇ×´Ì¬×é¼şµÄÃû³Æ£¨Ä¬ÈÏÎª statestore) £¬´Ë×é¼ş¶¨ÒåÔÚ 
-a. windowsÏÂ, C:\Users\<username>\.dapr\components\statestore.yaml  
-b. linuxÏÂ£¬ ~/.dapr/components/statestore.yaml 
+DaprçŠ¶æ€Api:
+http://localhost:3500/v1.0/state/myStateStore/planet è·å– planet æ‰€å­˜æ”¾çš„çŠ¶æ€å€¼
 
+ä¸Šé¢urlä¸­ï¼Œ myStateStore æ˜¯çŠ¶æ€ç»„ä»¶çš„åç§°ï¼ˆé»˜è®¤ä¸º statestore) ï¼Œæ­¤ç»„ä»¶å®šä¹‰åœ¨
+a. windowsä¸‹, C:\Users\<username>\.dapr\components\statestore.yaml
+b. linuxä¸‹ï¼Œ ~/.dapr/components/statestore.yaml
 
 ```yaml
 apiVersion: dapr.io/v1alpha1
@@ -58,24 +80,28 @@ spec:
   - name: actorStateStore
     value: "true"
 ```
-Ä¬ÈÏÊ¹ÓÃ redis £¨ÔÚ°²×°daprÊ±£¬½«Ä¬ÈÏÏÂÔØ²¢Æô¶¯Ò»¸ö redisµÄdocker¾µÏñ)  
 
-3. ¶©ÔÄ
-* ·¢²¼ / ¶©ÔÄÄ£Ê½ ÔÊĞíÎ¢·şÎñÊ¹ÓÃÏûÏ¢Ïà»¥Í¨ĞÅ¡£ 
-> Éú²úÕß»ò·¢²¼Õß ½«ÏûÏ¢·¢ËÍÖÁ Ö÷Ìâ£¨Topic£© £¬²¢ÇÒ²»ÖªµÀ½ÓÊÕÏûÏ¢µÄÓ¦ÓÃ³ÌĞò¡£
-> Ïû·ÑÕß ½«¶©ÔÄ¸ÃÖ÷Ìâ²¢ÊÕµ½ËüµÄÏûÏ¢£¬²¢ÇÒ²»ÖªµÀÊ²Ã´Ó¦ÓÃ³ÌĞòÉú²úÁËÕâĞ©ÏûÏ¢
-> ÖĞ¼äÏûÏ¢´úÀí£¨intermediary message broker£©__ÓÉdaprÊµÏÖ__ ¸ºÔğ½«Ã¿ÌõÏûÏ¢´ÓÊäÈëÆµµÀ¸´ÖÆµ½ËùÓĞ¶Ô´ËÏûÏ¢¸ĞĞËÈ¤µÄ¶©ÔÄÕßµÄÊä³öÆµµÀ¡£
+é»˜è®¤ä½¿ç”¨ redis ï¼ˆåœ¨å®‰è£…dapræ—¶ï¼Œå°†é»˜è®¤ä¸‹è½½å¹¶å¯åŠ¨ä¸€ä¸ª redisçš„dockeré•œåƒ)
 
-* Dapr ÖĞµÄ·¢²¼/¶©ÔÄ API Ìá¹©ÖÁÉÙÒ»´Î£¨at-least-once£©µÄ±£Ö¤£¬²¢Óë¸÷ÖÖÏûÏ¢´úÀíºÍ¶ÓÁĞÏµÍ³¼¯³É¡£
-> ·şÎñËùÊ¹ÓÃµÄÌØ¶¨ÊµÏÖÊÇ¿É²å°ÎµÄ£¬²¢±»ÅäÖÃÎªÔËĞĞÊ±µÄ Dapr Pub/Sub ×é¼ş¡£
-> ¼´¿ÉÒÔºÜ·½±ãµÄ½«Ä¬ÈÏµÄ Redis·¢²¼¶©ÔÄ¸ÄÎª RabbitMq»òÕßÆäËû.
+3. è®¢é˜…
 
-Dapr ·¢²¼Api:
-http://localhost:3500/v1.0/publish/pubsub/order Ïòorder Ö÷Ìâ·¢²¼ÏûÏ¢.
+* å‘å¸ƒ / è®¢é˜…æ¨¡å¼ å…è®¸å¾®æœåŠ¡ä½¿ç”¨æ¶ˆæ¯ç›¸äº’é€šä¿¡ã€‚
 
-ÉÏÃæurlÖĞ£¬ pubsub ÊÇ·¢²¼¶©ÔÄ×é¼şµÄÃû³Æ£¨Ä¬ÈÏÎª pubsub) £¬´Ë×é¼ş¶¨ÒåÔÚ 
-a. windowsÏÂ, C:\Users\<username>\.dapr\components\pubsub.yaml  
-b. linuxÏÂ£¬ ~/.dapr/components/pubsub.yaml 
+> ç”Ÿäº§è€…æˆ–å‘å¸ƒè€… å°†æ¶ˆæ¯å‘é€è‡³ ä¸»é¢˜ï¼ˆTopicï¼‰ ï¼Œå¹¶ä¸”ä¸çŸ¥é“æ¥æ”¶æ¶ˆæ¯çš„åº”ç”¨ç¨‹åºã€‚
+> æ¶ˆè´¹è€… å°†è®¢é˜…è¯¥ä¸»é¢˜å¹¶æ”¶åˆ°å®ƒçš„æ¶ˆæ¯ï¼Œå¹¶ä¸”ä¸çŸ¥é“ä»€ä¹ˆåº”ç”¨ç¨‹åºç”Ÿäº§äº†è¿™äº›æ¶ˆæ¯
+> ä¸­é—´æ¶ˆæ¯ä»£ç†ï¼ˆintermediary message brokerï¼‰__ç”±daprå®ç°__ è´Ÿè´£å°†æ¯æ¡æ¶ˆæ¯ä»è¾“å…¥é¢‘é“å¤åˆ¶åˆ°æ‰€æœ‰å¯¹æ­¤æ¶ˆæ¯æ„Ÿå…´è¶£çš„è®¢é˜…è€…çš„è¾“å‡ºé¢‘é“ã€‚
+
+* Dapr ä¸­çš„å‘å¸ƒ/è®¢é˜… API æä¾›è‡³å°‘ä¸€æ¬¡ï¼ˆat-least-onceï¼‰çš„ä¿è¯ï¼Œå¹¶ä¸å„ç§æ¶ˆæ¯ä»£ç†å’Œé˜Ÿåˆ—ç³»ç»Ÿé›†æˆã€‚
+
+> æœåŠ¡æ‰€ä½¿ç”¨çš„ç‰¹å®šå®ç°æ˜¯å¯æ’æ‹”çš„ï¼Œå¹¶è¢«é…ç½®ä¸ºè¿è¡Œæ—¶çš„ Dapr Pub/Sub ç»„ä»¶ã€‚
+> å³å¯ä»¥å¾ˆæ–¹ä¾¿çš„å°†é»˜è®¤çš„ Rediså‘å¸ƒè®¢é˜…æ”¹ä¸º RabbitMqæˆ–è€…å…¶ä»–.
+
+Dapr å‘å¸ƒApi:
+http://localhost:3500/v1.0/publish/pubsub/order å‘order ä¸»é¢˜å‘å¸ƒæ¶ˆæ¯.
+
+ä¸Šé¢urlä¸­ï¼Œ pubsub æ˜¯å‘å¸ƒè®¢é˜…ç»„ä»¶çš„åç§°ï¼ˆé»˜è®¤ä¸º pubsub) ï¼Œæ­¤ç»„ä»¶å®šä¹‰åœ¨
+a. windowsä¸‹, C:\Users\<username>\.dapr\components\pubsub.yaml
+b. linuxä¸‹ï¼Œ ~/.dapr/components/pubsub.yaml
 
 ```yaml
 apiVersion: dapr.io/v1alpha1
@@ -92,73 +118,69 @@ spec:
     value: ""
 ```
 
-Ä¬ÈÏÊ¹ÓÃ redis £¨ÔÚ°²×°daprÊ±£¬½«Ä¬ÈÏÏÂÔØ²¢Æô¶¯Ò»¸ö redisµÄdocker¾µÏñ)  
+é»˜è®¤ä½¿ç”¨ redis ï¼ˆåœ¨å®‰è£…dapræ—¶ï¼Œå°†é»˜è®¤ä¸‹è½½å¹¶å¯åŠ¨ä¸€ä¸ª redisçš„dockeré•œåƒ)
 
-4. ×ÊÔ´°ó¶¨??
-
+4. èµ„æºç»‘å®š??
 5. Actors ??
-actor Ä£Ê½ ²ûÊöÁË Actors Îª×îµÍ¼¶±ğµÄ¡°¼ÆËãµ¥Ôª¡±¡£
-> »»¾ä»°Ëµ£¬Äú½«´úÂëĞ´Èë¶ÀÁ¢µ¥Ôª ( ³ÆÎªactor) £¬¸Ãµ¥Ôª½ÓÊÕÏûÏ¢²¢Ò»´Î´¦ÀíÏûÏ¢£¬¶ø²»½øĞĞÈÎºÎÀàĞÍµÄ²¢ĞĞ»òÏß³Ì´¦Àí¡£
+   actor æ¨¡å¼ é˜è¿°äº† Actors ä¸ºæœ€ä½çº§åˆ«çš„â€œè®¡ç®—å•å…ƒâ€ã€‚
 
-6. ¿É¹Û²âĞÔ
-Dapr Ê¹ÓÃ Zipkin Ğ­Òé½øĞĞ·Ö²¼Ê½¸ú×ÙºÍÖ¸±êÊÕ¼¯¡£  
+> æ¢å¥è¯è¯´ï¼Œæ‚¨å°†ä»£ç å†™å…¥ç‹¬ç«‹å•å…ƒ ( ç§°ä¸ºactor) ï¼Œè¯¥å•å…ƒæ¥æ”¶æ¶ˆæ¯å¹¶ä¸€æ¬¡å¤„ç†æ¶ˆæ¯ï¼Œè€Œä¸è¿›è¡Œä»»ä½•ç±»å‹çš„å¹¶è¡Œæˆ–çº¿ç¨‹å¤„ç†ã€‚
 
-* ¸ú×ÙÒ»¸öApiÍ¨¹ı dapr Ëù½øĞĞµÄÁ´Ê½µ÷ÓÃ
-* ÊÕ¼¯ĞÔÄÜÖ¸±ê
+6. å¯è§‚æµ‹æ€§
+   Dapr ä½¿ç”¨ Zipkin åè®®è¿›è¡Œåˆ†å¸ƒå¼è·Ÿè¸ªå’ŒæŒ‡æ ‡æ”¶é›†ã€‚
 
-Dapr ½« HTTP/GRPC Middleware Ìí¼Óµ½ Dapr sidecar¡£   
-Middleware À¹½ØËùÓĞ Dapr ºÍÓ¦ÓÃ³ÌĞòÁ÷Á¿£¬²¢×Ô¶¯×¢Èë¹ØÁªIDÒÔ¸ú×Ù·Ö²¼Ê½ÊÂÎñ¡£  
+* è·Ÿè¸ªä¸€ä¸ªApié€šè¿‡ dapr æ‰€è¿›è¡Œçš„é“¾å¼è°ƒç”¨
+* æ”¶é›†æ€§èƒ½æŒ‡æ ‡
 
+Dapr å°† HTTP/GRPC Middleware æ·»åŠ åˆ° Dapr sidecarã€‚Middleware æ‹¦æˆªæ‰€æœ‰ Dapr å’Œåº”ç”¨ç¨‹åºæµé‡ï¼Œå¹¶è‡ªåŠ¨æ³¨å…¥å…³è”IDä»¥è·Ÿè¸ªåˆ†å¸ƒå¼äº‹åŠ¡ã€‚
 
 7. Secrets
 
-Ó¦ÓÃ³ÌĞòÍ¨³£»áÍ¨¹ıÊ¹ÓÃ×¨ÓÃµÄÃÜÔ¿´æ´¢À´ÃØÃÜ´æ´¢Ãô¸ĞĞÅÏ¢£¬ÈçÁ¬½Ó×Ö·û´®¡¢ÃÜÔ¿ºÍÓÃÓÚÓëÊı¾İ¿â¡¢·şÎñºÍÍâ²¿ÏµÍ³½øĞĞÑéÖ¤µÄÁîÅÆ¡£    
-ÈÃ¿ª·¢ÈËÔ±ÔÚÈÎºÎµØ·½¸üÈİÒ×ÏûºÄÓ¦ÓÃ³ÌĞòÃÜÔ¿£¬ Dapr ÓĞÒ»¸ö×¨ÓÃµÄÃÜÔ¿¹¹½¨¿é API £¬ÔÊĞí¿ª·¢ÈËÔ±´ÓÒ»¸öÃÜÔ¿´æ´¢»ñµÃÃÜÔ¿¡£  
+åº”ç”¨ç¨‹åºé€šå¸¸ä¼šé€šè¿‡ä½¿ç”¨ä¸“ç”¨çš„å¯†é’¥å­˜å‚¨æ¥ç§˜å¯†å­˜å‚¨æ•æ„Ÿä¿¡æ¯ï¼Œå¦‚è¿æ¥å­—ç¬¦ä¸²ã€å¯†é’¥å’Œç”¨äºä¸æ•°æ®åº“ã€æœåŠ¡å’Œå¤–éƒ¨ç³»ç»Ÿè¿›è¡ŒéªŒè¯çš„ä»¤ç‰Œã€‚
+è®©å¼€å‘äººå‘˜åœ¨ä»»ä½•åœ°æ–¹æ›´å®¹æ˜“æ¶ˆè€—åº”ç”¨ç¨‹åºå¯†é’¥ï¼Œ Dapr æœ‰ä¸€ä¸ªä¸“ç”¨çš„å¯†é’¥æ„å»ºå— API ï¼Œå…è®¸å¼€å‘äººå‘˜ä»ä¸€ä¸ªå¯†é’¥å­˜å‚¨è·å¾—å¯†é’¥ã€‚
 
-Ê¹ÓÃ Dapr µÄÃÜÔ¿´æ´¢¹¹½¨¿éÍ¨³£Éæ¼°ÒÔÏÂÄÚÈİ£º
-1. ÉèÖÃÒ»¸öÌØ¶¨µÄÃÜÔ¿´æ´¢½â¾ö·½°¸µÄ×é¼ş¡£
-2. ÔÚÓ¦ÓÃ³ÌĞò´úÂëÖĞÊ¹ÓÃ Dapr ÃÜÔ¿ API »ñÈ¡ÃÜÔ¿¡£  
-3. ¿ÉÑ¡£¬ÔÚDapr×é¼şÎÄ¼şÖĞÒıÓÃÃÜÔ¿¡£
+ä½¿ç”¨ Dapr çš„å¯†é’¥å­˜å‚¨æ„å»ºå—é€šå¸¸æ¶‰åŠä»¥ä¸‹å†…å®¹ï¼š
 
-Dapr·ÃÎÊ Secrets·ÃÎÊApi:
-http://localhost:3500/v1.0/secrets/vault/mysecret »ñÈ¡ mysecretµÄÖµ.
+1. è®¾ç½®ä¸€ä¸ªç‰¹å®šçš„å¯†é’¥å­˜å‚¨è§£å†³æ–¹æ¡ˆçš„ç»„ä»¶ã€‚
+2. åœ¨åº”ç”¨ç¨‹åºä»£ç ä¸­ä½¿ç”¨ Dapr å¯†é’¥ API è·å–å¯†é’¥ã€‚
+3. å¯é€‰ï¼Œåœ¨Daprç»„ä»¶æ–‡ä»¶ä¸­å¼•ç”¨å¯†é’¥ã€‚
 
-## µÚ¶şÕÂ Dapr·şÎñºÍ¿Í»§¶Ë
+Daprè®¿é—® Secretsè®¿é—®Api:
+http://localhost:3500/v1.0/secrets/vault/mysecret è·å– mysecretçš„å€¼.
 
-https://www.cnblogs.com/chenyishi/p/15324032.html
+## ç¬¬äºŒç«  DapræœåŠ¡å’Œå®¢æˆ·ç«¯
 
-### ÔËĞĞ
+### è¿è¡Œ
 
-1. ÔËĞĞºó¶Ë·şÎñ£º 
-dapr run --dapr-http-port 3511 --app-port 5000  --app-id backend dotnet  .\E2_BackEnd\bin\Debug\net6.0\E2_BackEnd.dll
+1. è¿è¡Œåç«¯æœåŠ¡ï¼š
+   dapr run --dapr-http-port 3511 --app-port 5000  --app-id backend dotnet  .\E2_BackEnd\bin\Debug\net6.0\E2_BackEnd.dll
 
-Í¨¹ıDapr CLIÆô¶¯BackEnd£¬Ö¸¶¨sidecar¶Ë¿ÚÎª3511£¬Ä¬ÈÏÎª3500£¬Ö¸¶¨app-portÊÇ5000£¬ÓëBackEndÄ¬ÈÏ¶Ë¿Ú±£³ÖÒ»ÖÂ¡£
-Í¨¹ıÏÂÃæ2¸öURL¿ÉÒÔ·ÃÎÊÉÏÊöµÄºó¶Ë·şÎñ.
+é€šè¿‡Dapr CLIå¯åŠ¨BackEndï¼ŒæŒ‡å®šsidecarç«¯å£ä¸º3511ï¼Œé»˜è®¤ä¸º3500ï¼ŒæŒ‡å®šapp-portæ˜¯5000ï¼Œä¸BackEndé»˜è®¤ç«¯å£ä¿æŒä¸€è‡´ã€‚
+é€šè¿‡ä¸‹é¢2ä¸ªURLå¯ä»¥è®¿é—®ä¸Šè¿°çš„åç«¯æœåŠ¡.
 
-1.1 ±ê×¼ NET6 µÄ URL ·ÃÎÊ
+1.1 æ ‡å‡† NET6 çš„ URL è®¿é—®
 http://localhost:5000/WeatherForecast
 
-1.2 Í¨¹ıDapr SideCar ·ÃÎÊ
+1.2 é€šè¿‡Dapr SideCar è®¿é—®
 http://localhost:3501/v1.0/invoke/backend/method/WeatherForecast
 
-
-2. ÔÚ  daprÖĞÔËĞĞ·ÃÎÊ DAPRºó¶Ë·şÎñÆ÷µÄ¿Í»§¶Ë
-dapr run --dapr-http-port 3501 --app-port 5001  --app-id frontend dotnet  .\E2_FrontEnd\bin\Debug\net6.0\E2_FrontEnd.dll
+2. åœ¨  daprä¸­è¿è¡Œè®¿é—® DAPRåç«¯æœåŠ¡å™¨çš„å®¢æˆ·ç«¯
+   dapr run --dapr-http-port 3501 --app-port 5001  --app-id frontend dotnet  .\E2_FrontEnd\bin\Debug\net6.0\E2_FrontEnd.dll
 
 ```c#
- // Í¨¹ıHttpClientµ÷ÓÃBackEnd
+ // é€šè¿‡HttpClientè°ƒç”¨BackEnd
         [HttpGet]
         public async Task<ActionResult> GetAsync()
         {
-            // SidecarÊ¹ÓÃ¿É²å½ÓÊ½Ãû³Æ½âÎö×é¼şÀ´½âÎö·şÎñBackEndµÄµØÖ·¡£
-            // ÔÚ×Ô³ĞÔØÄ£Ê½ÏÂ£¬Dapr Ê¹ÓÃ mdn À´²éÕÒËü¡£
-            // ÔÚ Kubernetes Ä£Ê½ÏÂÔËĞĞÊ±£¬Kubernetes DNS ·şÎñ½«È·¶¨µØÖ·¡£
+            // Sidecarä½¿ç”¨å¯æ’æ¥å¼åç§°è§£æç»„ä»¶æ¥è§£ææœåŠ¡BackEndçš„åœ°å€ã€‚
+            // åœ¨è‡ªæ‰¿è½½æ¨¡å¼ä¸‹ï¼ŒDapr ä½¿ç”¨ mdn æ¥æŸ¥æ‰¾å®ƒã€‚
+            // åœ¨ Kubernetes æ¨¡å¼ä¸‹è¿è¡Œæ—¶ï¼ŒKubernetes DNS æœåŠ¡å°†ç¡®å®šåœ°å€ã€‚
             using var httpClient = DaprClient.CreateInvokeHttpClient();
             var result = await httpClient.GetFromJsonAsync<IEnumerable<WeatherForecast>>("http://backend/WeatherForecast");
             return Ok(result);
         }
 
-        // Í¨¹ıDaprClientµ÷ÓÃBackEnd
+        // é€šè¿‡DaprClientè°ƒç”¨BackEnd
         [HttpGet("get2")]
         public async Task<ActionResult> Get2Async()
         {
@@ -168,31 +190,33 @@ dapr run --dapr-http-port 3501 --app-port 5001  --app-id frontend dotnet  .\E2_F
         }
 ```
 
-* GetAsync APIÖĞÍ¨¹ıDaprClient.CreateInvokeHttpClient()ĞÂ½¨ÁËHttpClient,Í¨¹ıGetAsync·½·¨µ÷ÓÃÁËbackend·şÎñÖĞµÄWeatherForecastAPI¡£
-> SidecarÊ¹ÓÃ¿É²å½ÓÊ½Ãû³Æ½âÎö×é¼şÀ´½âÎö·şÎñBackEndµÄµØÖ·¡£  
-> ÔÚ×Ô³ĞÔØÄ£Ê½ÏÂ£¬Dapr Ê¹ÓÃ mdn À´²éÕÒËü¡£   
-> ÔÚ Kubernetes Ä£Ê½ÏÂÔËĞĞÊ±£¬Kubernetes DNS ·şÎñ½«È·¶¨µØÖ·¡£  
+* GetAsync APIä¸­é€šè¿‡DaprClient.CreateInvokeHttpClient()æ–°å»ºäº†HttpClient,é€šè¿‡GetAsyncæ–¹æ³•è°ƒç”¨äº†backendæœåŠ¡ä¸­çš„WeatherForecastAPIã€‚
 
-* dapr run --dapr-http-port 3501 --app-port 5001  --app-id frontend dotnet run 
-> Ê¹ÓÃ dotnet run ÔËĞĞÊ±£¬¿ÉÄÜ»á¼àÌıµ½²»Í¬µÄ¶Ë¿Ú£¨ÀıÈç 5155£©,ÔòÎŞ·¨´Ó 3501 Ìø×ªµ½ 5001 Õâ¸ö¶Ë¿Ú.
+> Sidecarä½¿ç”¨å¯æ’æ¥å¼åç§°è§£æç»„ä»¶æ¥è§£ææœåŠ¡BackEndçš„åœ°å€ã€‚
+> åœ¨è‡ªæ‰¿è½½æ¨¡å¼ä¸‹ï¼ŒDapr ä½¿ç”¨ mdn æ¥æŸ¥æ‰¾å®ƒã€‚
+> åœ¨ Kubernetes æ¨¡å¼ä¸‹è¿è¡Œæ—¶ï¼ŒKubernetes DNS æœåŠ¡å°†ç¡®å®šåœ°å€ã€‚
 
-2.1 ¿Í»§¶ËµÄ·ÃÎÊ£º
+* dapr run --dapr-http-port 3501 --app-port 5001  --app-id frontend dotnet run
+
+> ä½¿ç”¨ dotnet run è¿è¡Œæ—¶ï¼Œå¯èƒ½ä¼šç›‘å¬åˆ°ä¸åŒçš„ç«¯å£ï¼ˆä¾‹å¦‚ 5155ï¼‰,åˆ™æ— æ³•ä» 3501 è·³è½¬åˆ° 5001 è¿™ä¸ªç«¯å£.
+
+2.1 å®¢æˆ·ç«¯çš„è®¿é—®ï¼š
 http://localhost:3501/v1.0/invoke/frontend/method/dapr
 http://localhost:3501/v1.0/invoke/frontend/method/dapr/get2
 dapr invoke --app-id frontend --verb "GET" --method dapr/get2
 
-## Á´Â·¸ú×Ù
+## é“¾è·¯è·Ÿè¸ª
 
-* Ä³Ò»¸ö½Ó¿ÚµÄµ÷ÓÃË³Ğò¡£  
+* æŸä¸€ä¸ªæ¥å£çš„è°ƒç”¨é¡ºåºã€‚
 
-×Ô³ĞÔØµÄ·½Ê½ÏÂ£¬DaprÄ¬ÈÏÆô¶¯ÁËzipkinÈİÆ÷£¬¿ÉÒÔÍ¨¹ıÒÔÏÂÁ´½Ó²é¿´  
-http://localhost:9411/zipkin/   Ä³Ò»¸ö½Ó¿ÚµÄµ÷ÓÃË³Ğò¡£
+è‡ªæ‰¿è½½çš„æ–¹å¼ä¸‹ï¼ŒDapré»˜è®¤å¯åŠ¨äº†zipkinå®¹å™¨ï¼Œå¯ä»¥é€šè¿‡ä»¥ä¸‹é“¾æ¥æŸ¥çœ‹
+http://localhost:9411/zipkin/   æŸä¸€ä¸ªæ¥å£çš„è°ƒç”¨é¡ºåºã€‚
 
+## çŠ¶æ€ç®¡ç†
 
-## ×´Ì¬¹ÜÀí
+### ç®€å•çš„çŠ¶æ€ç®¡ç†è°ƒç”¨:
 
-### ¼òµ¥µÄ×´Ì¬¹ÜÀíµ÷ÓÃ:  
-```c# 
+```c#
         [HttpGet]
         public async Task<ActionResult> GetAsync()
         {
@@ -208,13 +232,15 @@ http://localhost:9411/zipkin/   Ä³Ò»¸ö½Ó¿ÚµÄµ÷ÓÃË³Ğò¡£
         }
 ```
 
-* statestore  ÊÇ daprÏÂÄ¬ÈÏµÄ×´Ì¬¹ÜÀí×é¼şµÄÃû³Æ£¬ Ä¬ÈÏÊ¹ÓÃ redis.  
-> new StateOptions { Consistency = ConsistencyMode.Strong } new StateOptions { Consistency = ConsistencyMode.Eventual }   ?? 
+* statestore  æ˜¯ daprä¸‹é»˜è®¤çš„çŠ¶æ€ç®¡ç†ç»„ä»¶çš„åç§°ï¼Œ é»˜è®¤ä½¿ç”¨ redis.
 
-* ¼üÃû³ÆÊ¹ÓÃ appid||key ĞÎÊ½£¬
-> ÈçÉÏÃæÀı×ÓÖĞ,¼üÃû³ÆÎª frontend||guid  ĞÎÊ½. 
+> new StateOptions { Consistency = ConsistencyMode.Strong } new StateOptions { Consistency = ConsistencyMode.Eventual }   ??
 
-* ¼üÀàĞÍÎª hash £¨data, version), versionÃ¿´ÎĞ´ÈëÊ±¶¼½«·¢Éú±ä»¯.
+* é”®åç§°ä½¿ç”¨ appid||key å½¢å¼ï¼Œ
+
+> å¦‚ä¸Šé¢ä¾‹å­ä¸­,é”®åç§°ä¸º frontend||guid  å½¢å¼.
+
+* é”®ç±»å‹ä¸º hash ï¼ˆdata, version), versionæ¯æ¬¡å†™å…¥æ—¶éƒ½å°†å‘ç”Ÿå˜åŒ–.
 
 ```txt
 127.0.0.1:6379> hgetall frontend||guid
@@ -224,10 +250,10 @@ http://localhost:9411/zipkin/   Ä³Ò»¸ö½Ó¿ÚµÄµ÷ÓÃË³Ğò¡£
 4) "3"
 ```
 
-### ·ÀÖ¹²¢·¢³åÍ»µÄ×´Ì¬¹ÜÀíµ÷ÓÃ: 
+### é˜²æ­¢å¹¶å‘å†²çªçš„çŠ¶æ€ç®¡ç†è°ƒç”¨:
 
 ```c#
- //Í¨¹ıtag·ÀÖ¹²¢·¢³åÍ»£¬±£´æÒ»¸öÖµ
+ //é€šè¿‡tagé˜²æ­¢å¹¶å‘å†²çªï¼Œä¿å­˜ä¸€ä¸ªå€¼
         [HttpPost("withtag")]
         public async Task<ActionResult> PostWithTagAsync()
         {
@@ -236,7 +262,7 @@ http://localhost:9411/zipkin/   Ä³Ò»¸ö½Ó¿ÚµÄµ÷ÓÃË³Ğò¡£
             return Ok("done");
         }
 
-        //Í¨¹ıtag·ÀÖ¹²¢·¢³åÍ»£¬É¾³ıÒ»¸öÖµ
+        //é€šè¿‡tagé˜²æ­¢å¹¶å‘å†²çªï¼Œåˆ é™¤ä¸€ä¸ªå€¼
         [HttpDelete("withtag")]
         public async Task<ActionResult> DeleteWithTagAsync()
         {
@@ -244,16 +270,16 @@ http://localhost:9411/zipkin/   Ä³Ò»¸ö½Ó¿ÚµÄµ÷ÓÃË³Ğò¡£
             return Ok(await _daprClient.TryDeleteStateAsync("statestore", "guid", etag));
         }
 ```
-ÉÏÊöÀı×ÓÖĞ£¬Í¬Ê±»ñÈ¡µ½ ¼üÖµºÍ¼ü°æ±¾£¬²¢ÔÚ¸üĞÂÊ±šHÈç¼ü°æ±¾£¬ÒÔ±ÜÃâÔÚ¶àÏß³ÌÍ¬Ê±²Ù×÷Ê±£¬·¢Éú³åÍ». 
 
+ä¸Šè¿°ä¾‹å­ä¸­ï¼ŒåŒæ—¶è·å–åˆ° é”®å€¼å’Œé”®ç‰ˆæœ¬ï¼Œå¹¶åœ¨æ›´æ–°æ—¶æ¬»å¦‚é”®ç‰ˆæœ¬ï¼Œä»¥é¿å…åœ¨å¤šçº¿ç¨‹åŒæ—¶æ“ä½œæ—¶ï¼Œå‘ç”Ÿå†²çª.
 
-### Í¨¹ıurlÄ£°å·ÃÎÊºÍÉèÖÃ×´Ì¬
- 
-* Í¨¹ıURLÄ£°åºÍ FromStateAttribute ´´½¨ StateEntryÊµÀı£¬²¢×Ô¶¯Í¨¹ı statestore×é¼şÌî³äStateEntryÊµÀıµÄÊôĞÔ
-* ĞŞ¸ÄStateEntryÊµÀıÊôĞÔ(Ö»ÄÜĞŞ¸ÄÆä value ÊôĞÔ£©½«×Ô¶¯±£´æµ½ statestore×é¼şÖĞ.
+### é€šè¿‡urlæ¨¡æ¿è®¿é—®å’Œè®¾ç½®çŠ¶æ€
+
+* é€šè¿‡URLæ¨¡æ¿å’Œ FromStateAttribute åˆ›å»º StateEntryå®ä¾‹ï¼Œå¹¶è‡ªåŠ¨é€šè¿‡ statestoreç»„ä»¶å¡«å……StateEntryå®ä¾‹çš„å±æ€§
+* ä¿®æ”¹StateEntryå®ä¾‹å±æ€§(åªèƒ½ä¿®æ”¹å…¶ value å±æ€§ï¼‰å°†è‡ªåŠ¨ä¿å­˜åˆ° statestoreç»„ä»¶ä¸­.
 
 ```c#
- // ´Ó°ó¶¨»ñÈ¡Ò»¸öÖµ£¬½¡Öµname´ÓÂ·ÓÉÄ£°å»ñÈ¡
+ // ä»ç»‘å®šè·å–ä¸€ä¸ªå€¼ï¼Œå¥å€¼nameä»è·¯ç”±æ¨¡æ¿è·å–
         [HttpGet("frombinding/{name}")]
         public async Task<ActionResult> GetFromBindingAsync([FromState("statestore", "name")] StateEntry<string> state)
         {
@@ -261,23 +287,23 @@ http://localhost:9411/zipkin/   Ä³Ò»¸ö½Ó¿ÚµÄµ÷ÓÃË³Ğò¡£
         }
 
 
-        // ¸ù¾İ°ó¶¨»ñÈ¡²¢ĞŞ¸ÄÖµ£¬½¡Öµname´ÓÂ·ÓÉÄ£°å»ñÈ¡
+        // æ ¹æ®ç»‘å®šè·å–å¹¶ä¿®æ”¹å€¼ï¼Œå¥å€¼nameä»è·¯ç”±æ¨¡æ¿è·å–
         [HttpPost("withbinding/{name}")]
         public async Task<ActionResult> PostWithBindingAsync([FromState("statestore", "name")] StateEntry<string> state)
-        {            
+        {          
             state.Value = Guid.NewGuid().ToString();
             return Ok(await state.TrySaveAsync());
         }
 ```
-get http://localhost:3501/v1.0/invoke/frontend/method/state/frombinding/myname 
+
+get http://localhost:3501/v1.0/invoke/frontend/method/state/frombinding/myname
 post http://localhost:3501/v1.0/invoke/frontend/method/state/withbinding/myname
 
-
-### ÅúÁ¿·ÃÎÊºÍÉ¾³ı
+### æ‰¹é‡è®¿é—®å’Œåˆ é™¤
 
 ```c#
 
-// »ñÈ¡¶à¸ö¸öÖµ
+// è·å–å¤šä¸ªä¸ªå€¼
         [HttpGet("list")]
         public async Task<ActionResult> GetListAsync()
         {
@@ -285,7 +311,7 @@ post http://localhost:3501/v1.0/invoke/frontend/method/state/withbinding/myname
             return Ok(result);
         }
 
-        // É¾³ı¶à¸ö¸öÖµ
+        // åˆ é™¤å¤šä¸ªä¸ªå€¼
         [HttpDelete("list")]
         public async Task<ActionResult> DeleteListAsync()
         {
@@ -299,8 +325,9 @@ post http://localhost:3501/v1.0/invoke/frontend/method/state/withbinding/myname
             return Ok("done");
         }
 ```
-_daprClient.GetBulkStateAsync("statestore", new List<string> { "guid" }, 10);  
-·µ»ØÁËÈçÏÂĞÎÊ½µÄÊı×é£¬¼´¼üÃû³Æ£¬¼üÖµ£¬¼ü°æ±¾¶¼Ò»²¢·µ»Ø
+
+_daprClient.GetBulkStateAsync("statestore", new List`<string>` { "guid" }, 10);
+è¿”å›äº†å¦‚ä¸‹å½¢å¼çš„æ•°ç»„ï¼Œå³é”®åç§°ï¼Œé”®å€¼ï¼Œé”®ç‰ˆæœ¬éƒ½ä¸€å¹¶è¿”å›
 
 ```json
 [
@@ -312,18 +339,18 @@ _daprClient.GetBulkStateAsync("statestore", new List<string> { "guid" }, 10);
 ]
 ```
 
-* É¾³ı¼üÖµÊ±ÔÚ BulkDeleteStateItem ´«ÈëÁË¼ü°æ±¾,ÅĞ¶ÏÁË°æ±¾µÄÒ»ÖÂĞÔ.  
+* åˆ é™¤é”®å€¼æ—¶åœ¨ BulkDeleteStateItem ä¼ å…¥äº†é”®ç‰ˆæœ¬,åˆ¤æ–­äº†ç‰ˆæœ¬çš„ä¸€è‡´æ€§.
 
-## ·¢²¼¶©ÔÄ
+## å‘å¸ƒè®¢é˜…
 
-* Ä¬ÈÏÇé¿öÏÂ£¬·¢²¼Ò»¸öÏûÏ¢ºó£¬daprÖ»»áÍÆËÍ¸øÒ»¸ö¶©ÔÄ;
-* ¿ÉÒÔÉùÃ÷Ê½¶©ÔÄ »òÕß ±à³Ì¶©ÔÄ
-* ·¢²¼¶©ÔÄ×é¼ş ºÍ Ó¦ÓÃapp ÎŞ¹Ø.
+* é»˜è®¤æƒ…å†µä¸‹ï¼Œå‘å¸ƒä¸€ä¸ªæ¶ˆæ¯åï¼Œdapråªä¼šæ¨é€ç»™ä¸€ä¸ªè®¢é˜…;
+* å¯ä»¥å£°æ˜å¼è®¢é˜… æˆ–è€… ç¼–ç¨‹è®¢é˜…
+* å‘å¸ƒè®¢é˜…ç»„ä»¶ å’Œ åº”ç”¨app æ— å…³.
 
-###  ÉùÃ÷Ê½¶©ÔÄ
+### å£°æ˜å¼è®¢é˜…
 
-* ÔÚ daprµÄ×é¼şÄ¿Â¼ÏÂÉùÃ÷Ò»¸ö ¶©ÔÄ×é¼ş,
-* ¿ÉÒÔ½«·¢²¼¡¢¶©ÔÄÍêÈ«½âñî. 
+* åœ¨ daprçš„ç»„ä»¶ç›®å½•ä¸‹å£°æ˜ä¸€ä¸ª è®¢é˜…ç»„ä»¶,
+* å¯ä»¥å°†å‘å¸ƒã€è®¢é˜…å®Œå…¨è§£è€¦.
 
 ```yaml
 apiVersion: dapr.io/v1alpha1
@@ -337,30 +364,30 @@ spec:
 scopes:
 - frontend
 ```
-kind: Subscription -- ±íÊ¾´Ë×é¼şÎªÒ»¸ö¶©ÔÄ×é¼ş
-topic: test_topic   -- ¶©ÔÄÖ÷Ìâ
-route: /TestSub     -- ÊÕµ½ÏûÏ¢·¢²¼µ½µÄÂ·ÓÉ       
-pubsubname: pubsub  -- ´ÓÄÄÒ»¸ö×é¼ş¶©ÔÄ
 
-- frontend          -- ÊÕµ½ÏûÏ¢ºó·¢²¼Ä¿µÄµÄappid
+kind: Subscription -- è¡¨ç¤ºæ­¤ç»„ä»¶ä¸ºä¸€ä¸ªè®¢é˜…ç»„ä»¶
+topic: test_topic   -- è®¢é˜…ä¸»é¢˜
+route: /TestSub     -- æ”¶åˆ°æ¶ˆæ¯å‘å¸ƒåˆ°çš„è·¯ç”±pubsubname: pubsub  -- ä»å“ªä¸€ä¸ªç»„ä»¶è®¢é˜…
 
+- frontend          -- æ”¶åˆ°æ¶ˆæ¯åå‘å¸ƒç›®çš„çš„appid
 
-### ±à³Ì¶©ÔÄ
+### ç¼–ç¨‹è®¢é˜…
 
-* Í¨¹ı TopicAttribute Ö¸¶¨ĞèÒª¶©ÔÄµÄ·¢²¼×é¼şºÍ¶©ÔÄÖ÷Ìâ
-* Í¨¹ı Request.Body ¶ÁÈ¡dapr·¢ËÍ¹ıÀ´µÄÏûÏ¢
-* ÆôÓÃ CloudEvents ÖĞ¼ä¼ş
-* Ê¹ÓÃÈçÏÂ´úÂë×¢²á¶©ÔÄµÄ±ê×¢´¦ÀíÓ³Éä
+* é€šè¿‡ TopicAttribute æŒ‡å®šéœ€è¦è®¢é˜…çš„å‘å¸ƒç»„ä»¶å’Œè®¢é˜…ä¸»é¢˜
+* é€šè¿‡ Request.Body è¯»å–daprå‘é€è¿‡æ¥çš„æ¶ˆæ¯
+* å¯ç”¨ CloudEvents ä¸­é—´ä»¶
+* ä½¿ç”¨å¦‚ä¸‹ä»£ç æ³¨å†Œè®¢é˜…çš„æ ‡æ³¨å¤„ç†æ˜ å°„
 
 ```c#
-app.UseCloudEvents();  // ÆôÓÃ CloudEvents ÖĞ¼ä¼ş
+app.UseCloudEvents();  // å¯ç”¨ CloudEvents ä¸­é—´ä»¶
 app.UseEndpoints((endpoints =>
 {
-    endpoints.MapSubscribeHandler(); // Ó³Éä TopicAttribute µÄ¶©ÔÄ´¦Àí
+    endpoints.MapSubscribeHandler(); // æ˜ å°„ TopicAttribute çš„è®¢é˜…å¤„ç†
 }));
 ```
 
-¶©ÔÄµÄ´¦Àí´úÂë  
+è®¢é˜…çš„å¤„ç†ä»£ç 
+
 ```c#
 
         /// <summary>
@@ -381,9 +408,9 @@ app.UseEndpoints((endpoints =>
         }
 ```
 
-### ·¢²¼ÏûÏ¢
+### å‘å¸ƒæ¶ˆæ¯
 
-Í¨¹ı PublishEventAsync ÏòÖ¸¶¨µÄ×é¼ş¡¢ºÍÖ÷Ìâ ·¢²¼ÏûÏ¢.
+é€šè¿‡ PublishEventAsync å‘æŒ‡å®šçš„ç»„ä»¶ã€å’Œä¸»é¢˜ å‘å¸ƒæ¶ˆæ¯.
 
 ```c#
 [HttpGet("pub")]
@@ -395,18 +422,391 @@ app.UseEndpoints((endpoints =>
         }
 ```
 
-* ·¢²¼ºóÀı×Ó´úÂë·¢²¼ÏûÏ¢Ê±£¬Ö»»áÏòÒ»¸ö¶©ÔÄ·¢²¼£»
-* Ã²ËÆ½«ÓÅÏÈÏò±à³ÌÊ½¶©ÔÄ·¢²¼¡£
+* å‘å¸ƒåä¾‹å­ä»£ç å‘å¸ƒæ¶ˆæ¯æ—¶ï¼Œåªä¼šå‘ä¸€ä¸ªè®¢é˜…å‘å¸ƒï¼›
+* è²Œä¼¼å°†ä¼˜å…ˆå‘ç¼–ç¨‹å¼è®¢é˜…å‘å¸ƒã€‚
 
-Í¨¹ıÏÂÁĞ2ÖĞ·½Ê½¿ÉÒÔ·¢²¼²âÊÔÏûÏ¢£º
+é€šè¿‡ä¸‹åˆ—2ä¸­æ–¹å¼å¯ä»¥å‘å¸ƒæµ‹è¯•æ¶ˆæ¯ï¼š
 
-http://localhost:3501/v1.0/invoke/frontend/method/TestPubSub/pub   
-dapr publish --publish-app-id frontend --pubsub pubsub --topic test_topic --data '{"date":"0001-01-01T00:00:00","temperatureC":0,"temperatureF":32,"summary":null}'  
+http://localhost:3501/v1.0/invoke/frontend/method/TestPubSub/pub
+dapr publish --publish-app-id frontend --pubsub pubsub --topic test_topic --data '{"date":"0001-01-01T00:00:00","temperatureC":0,"temperatureF":32,"summary":null}'
 
-## ActorÄ£Ê½
+## Actors æ¨¡å¼
 
-* Actors Îª×îµÍ¼¶±ğµÄ¡°¼ÆËãµ¥Ôª¡± 
+* Actors ä¸ºæœ€ä½çº§åˆ«çš„â€œè®¡ç®—å•å…ƒâ€
 
-> ActorsÄ£Ê½ÊÇÒ»¶ÎĞèÒªµ¥Ïß³ÌÖ´ĞĞµÄ´úÂë¿é¡£  
-> ActorsÄ£Ê½Îª·Ö²¼Ê½Ó¦ÓÃÖĞµÄµ¥Ïß³ÌÂß¼­Ìá¹©ÁËÒ»ÖÖ¸üºÃµÄÑ¡Ôñ   
+> Actorsæ¨¡å¼æ˜¯ä¸€æ®µéœ€è¦å•çº¿ç¨‹æ‰§è¡Œçš„ä»£ç å—ã€‚
+> Actorsæ¨¡å¼ä¸ºåˆ†å¸ƒå¼åº”ç”¨ä¸­çš„å•çº¿ç¨‹é€»è¾‘æä¾›äº†ä¸€ç§æ›´å¥½çš„é€‰æ‹©
+> æ¯ä¸€ä¸ªActoréƒ½å…·æœ‰ Id å’Œ ç±»å‹ï¼ŒæŒ‰ç…§ Id å’Œ ç±»å‹è¿›è¡Œå•çº¿ç¨‹çš„åˆ†ç±»å¤„ç†.
 
+* è¿è¡ŒåŸç†ï¼š
+
+1. Daprå¯åŠ¨ app åï¼ŒSideCar åˆ›å»º Actors å, è·å– Actors çš„é…ç½®ä¿¡æ¯
+2. SideCar å°† Actors é…ç½®ä¿¡æ¯å‘é€åˆ° PlacementService
+3. PlacementService æŒ‰ç…§ Actorsçš„ Id å’Œ Actorç±»å‹åˆ†åŒºï¼Œå¹¶å°†å…¶å¹¿æ’­åˆ°æ‰€æœ‰çš„ daprå®ä¾‹
+
+> æ—¥å¿—ç±»ä¼¼å¦‚ä¸‹è¿™æ ·,
+> time="2022-02-09T10:47:15.9126249+08:00" level=info msg="placement tables updated, version: 61" app_id=backend instance=D2103026daiwei scope=dapr.runtime.actor.internal.placement type=log ver=1.6.0
+> time="2022-02-09T11:03:50.0994116+08:00" level=info msg="placement tables updated, version: 62" app_id=backend instance=D2103026daiwei scope=dapr.runtime.actor.internal.placement type=log ver=1.6.0
+
+4. å¦ä¸€ä¸ªSideCar åˆ›å»ºç›¸åŒId å’Œ ç±»å‹çš„ Actors ä»£ç†å®ä¾‹æ—¶å¹¶è°ƒç”¨å…¶æ–¹æ³•æ—¶ï¼Œå°†è½¬å‘åˆ°ä¹‹å‰å·²åˆ›å»ºçš„ Actors å¤„ç†ï¼›
+
+(`<span style='color:red;'>`å­˜ç–‘ï¼Œå’Œæ‰“å°çš„æ—¥å¿—ä¸ç¬¦,åˆ›å»º Actorsçš„å®ä¾‹åï¼Œå¦å¤–ä¸€ä¸ªé¡¹ç›®æœªçœ‹åˆ°å¹¿æ’­çš„æ¶ˆæ¯,è€Œåªèƒ½åœ¨daprå¯åŠ¨æ—¶çœ‹åˆ°å¹¿æ’­æ¶ˆæ¯)
+
+### Actorsæ¨¡å¼å®ä¾‹
+
+* å¦‚æœ Actoréœ€è¦æŒä¹…ä¿å­˜æ•°æ®ï¼Œåˆ™å¿…é¡»ä¿®æ”¹ çŠ¶æ€å­˜å‚¨ç»„ä»¶ï¼Œæ·»åŠ å¦‚ä¸‹é…ç½®é¡¹:
+  * Actorä¸­å­˜åœ¨ IActorStateManager StateManager å±æ€§ï¼Œç”¨äºæŒä¹…ä¿å­˜æ•°æ®
+  * æŒä¹…æ•°æ®çš„Hashé”®åç§° appid||ActorType||ActorId||Key, ä¾‹å¦‚ï¼Œ"frontend||OrderStatusActor||od139||od139"
+    * ä¸Šè¿°ä¾‹å­ä¸­ä½¿ç”¨äº† ActorId ä½œä¸ºäº† Keyåç§°ï¼Œæ•…é‡å¤äº† od139
+
+```yaml
+- name: actorStateStore
+  value: "true"
+```
+
+```csharp
+//  æ·»åŠ æˆ–è€…æ›´æ–°æ•°æ®ï¼Œåˆæ¬¡æ·»åŠ æ—¶,å°†è®¾ç½®ä¸º init; å†æ¬¡æ›´æ–°æ—¶,å°†å€¼å˜ä¸º paid;
+await StateManager.AddOrUpdateStateAsync(orderId, "init", (key, currentState) => "paid");
+//  è·å–ç»™å®šé”®çš„å€¼
+await StateManager.GetStateAsync<string>(orderId);
+```
+
+* æŒ‰ç…§éœ€è¦ æ·»åŠ  Dapr.Actorså’ŒDapr.Actors.AspNetCore åŒ….
+
+1. å› ä¸ºæ˜¯ä»£ç†å®ä¾‹ï¼Œå› æ­¤éœ€è¦æœ‰ä¸€ä¸ªç»§æ‰¿è‡ª IActoræ¥å£çš„ä¸šåŠ¡æ¥å£;
+
+```csharp
+    public interface IOrderStatusActor : IActor
+    {
+        Task<string> Paid();
+        Task<string> GetStatus();
+    }
+```
+
+2. å®ç°ä¸šåŠ¡æ¥å£çš„Actorä¸šåŠ¡ç±», å¿…é¡»ç»§æ‰¿è‡ªActorç±»
+
+* Actorçš„Idåœ¨åˆ›å»ºæ­¤ Actorç±»å®ä¾‹æ—¶, ä¼ å…¥åˆ° Actorç±»çš„ Idå±æ€§,å…¶ç±»å‹ä¸º ActorId.
+* Actorçš„åˆ†ç±»å­—ç¬¦ä¸²åœ¨æ­¤ç±»çš„å®ä¾‹ä¸­ä¸å¯ä»¥è®¿é—®,è€Œæ˜¯åœ¨åˆ›å»ºä»£ç†æ—¶ä¼ å…¥.
+
+```csharp
+public class OrderStatusActor : Actor, IOrderStatusActor
+{
+        public OrderStatusActor(ActorHost host) : base(host)
+        {       
+        }
+        public async Task<string> GetStatus()
+        {
+            var orderId = this.Id.GetId();
+            return await StateManager.GetStateAsync<string>(orderId);
+        }
+        public async Task<string> Paid()
+        {      
+            var orderId = this.Id.GetId();
+            await StateManager.AddOrUpdateStateAsync(orderId, "init", (key, currentState) => "paid");
+            return orderId;
+        }
+}
+```
+
+3. å¯ç”¨Actoræ³¨å†ŒApi.
+
+* Dapr SideCar è°ƒç”¨åº”ç”¨ç¨‹åºæ¥æ‰¿è½½å’Œä¸æ‰§è¡Œç»„ä»¶å®ä¾‹è¿›è¡Œäº¤äº’ï¼Œéœ€è¦åœ¨Startupçš„Configureä¸­æ³¨å†Œ Actor.
+
+```csharp
+services.AddActors(options =>
+{
+   options.Actors.RegisterActor<OrderStatusActor>();
+    options.ActorIdleTimeout = TimeSpan.FromMinutes(1); 
+    options.ActorScanInterval = TimeSpan.FromSeconds(30);
+    options.DrainOngoingCallTimeout = TimeSpan.FromSeconds(60);
+    options.DrainRebalancedActors = true;
+    options.RemindersStoragePartitions = 7;   
+});
+```
+
+* éœ€è¦ Endpoingä»¥ä¾¿ Sidecar èƒ½å¤Ÿé€šè¿‡æ¥å£è®¿é—®æ³¨å†Œçš„æ‰€æœ‰Actorï¼Œè·å– Actorä¿¡æ¯å¹¶åŒæ­¥åˆ° Placement Service.
+
+```csharp
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapActorsHandlers();
+    // .......
+}); 
+```
+
+4. ä½¿ç”¨Actorä¸šåŠ¡æ¥å£çš„å®¢æˆ·ç«¯é€šè¿‡ä»£ç†åˆ›å»ºActorä¸šåŠ¡ç±»çš„ä»£ç†å®ä¾‹.
+
+* åˆ›å»ºä»£ç†å®ä¾‹æ—¶,éœ€è¦ä¼ å…¥ ActorId å’Œ Actoråˆ†ç±», ä»¥ä¾¿æ˜¯å”¯ä¸€å®ä¾‹.
+
+```csharp
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
+        [HttpGet("paid/{orderId}")]
+        public async Task<ActionResult> PaidAsync(string orderId)
+        {
+            var actorId = new ActorId("myid-" + orderId);
+            var proxy = ActorProxy.Create<IOrderStatusActor>(actorId, nameof(OrderStatusActor));
+            var result = await proxy.Paid();
+            return Ok(result);
+        }
+```
+
+### è®¡æ—¶å™¨å’Œæé†’å™¨
+
+æ¯ä¸€ä¸ªActor éƒ½å¯ä»¥è®¾ç½® timer å’Œ reminder å®šæ—¶æ‰§è¡ŒæŸäº›è¡Œä¸º.
+
+* timer å’Œ reminder å’Œ Actorå®ä¾‹ç›¸å…³ï¼Œ
+
+  * å³æ¯ä¸ªActorå®ä¾‹éƒ½å•ç‹¬æ‰§è¡Œå®šæ—¶ä»»åŠ¡å’Œæé†’ä»»åŠ¡.
+* timer (ç±»å‹ä¸º ActorTimer) åªä½œç”¨äºæ¿€æ´»çŠ¶æ€çš„Actorã€‚
+
+  * ä¸€ä¸ªActoré•¿æœŸä¸è¢«è°ƒç”¨ï¼Œå…¶è‡ªå·±çš„ç©ºé—²è®¡æ—¶å™¨ä¼šé€æ¸ç´¯ç§¯ï¼Œåˆ°ä¸€å®šæ—¶é—´å(å‚è€ƒä¸Šé¢ä»£ç ä¸­çš„ ActorIdleTimeoutå‚æ•°) ä¼šè¢«Dapré”€æ¯;
+  * timeræ²¡æ³•ä½œç”¨äºå·²é”€æ¯çš„Actorã€‚
+  * æ³¨æ„, `<span style='color:red;'>`å®é™…ä¾‹å­ä¸­ï¼Œåªè¦å®šæ—¶å™¨å¯åŠ¨äº†,åˆ™ Actorå°±ä¸ä¼šç©ºé—²,ä¹Ÿå³ä¸ä¼šé”€æ¯
+* reminderåˆ™å¯ä»¥ä½œç”¨äºæ‰€æœ‰çŠ¶æ€çš„Actorã€‚
+
+  * ä¸»è¦æ–¹å¼æ˜¯é‡ç½®ç©ºé—²è®¡æ—¶å™¨ï¼Œä½¿å…¶å¤„äºæ´»è·ƒçŠ¶æ€
+
+#### å®šæ—¶å™¨
+
+##### é€šè¿‡ Url è°ƒç”¨æŸä¸€ä¸ªå®šæ—¶å™¨çš„æ–¹æ³•
+
+POST/PUT http://localhost:3500/v1.0/actors/\<actorType\>/\<actorId\>/timers/\<name\>
+Postå‚æ•°
+{
+  "dueTime":"0h0m9s0ms",
+  "period":"0h0m3s0ms"
+}
+
+~~æ— æ³•è°ƒç”¨~~
+a. http://localhost:3511/v1.0/invoke/frontend/method/actor/paid/139
+
+> æ¿€æ´» od139è¿™ä¸ª actorå,
+
+b. http://localhost:3511/v1.0/actors/OrderStatusActor/od139/timers/od-od139
+
+å˜æ›´å®šæ—¶å™¨çš„å®šæ—¶é…ç½®?å˜æ›´æˆåŠŸï¼Œä½†æ˜¯å®šæ—¶å™¨æ‰§è¡Œå¼‚å¸¸;
+post json
+{
+  "dueTime":"0h0m1s0ms",
+  "period":"0h0m1s0ms"
+}
+æŠ¥é”™: "message": "error creating actor timer: can't create timer for actor OrderStatusActor||od139: actor not activated"
+
+##### é€šè¿‡ä»£ç åˆ›å»ºå®šæ—¶å™¨çš„æ–¹æ³•.
+
+1. ä½¿ç”¨ Actorç±» RegisterTimerAsync å¼‚æ­¥æ–¹æ³•åˆ›å»ºå®šæ—¶å™¨ï¼Œ è¿”å› Task\<ActorTimer\> å®ä¾‹
+
+> ActorTimer ç±»ä¸­æœ‰ ActorType å’Œ ActorId å±æ€§.
+> æ­¤æ–¹æ³•å‚æ•°è¯´æ˜ï¼š
+> a. è®¡æ—¶å™¨çš„åç§°
+> b. è§¦å‘è®¡æ—¶å™¨æ—¶è¦è°ƒç”¨çš„å›è°ƒæ–¹æ³•çš„åç§°
+> c. è¦ä¼ é€’ç»™å›è°ƒæ–¹æ³•çš„çŠ¶æ€(å­—èŠ‚æ•°ç»„ æˆ–è€… null)
+> d. é¦–æ¬¡è°ƒç”¨å›è°ƒæ–¹æ³•ä¹‹å‰è¦ç­‰å¾…çš„æ—¶é—´
+> e. å›è°ƒæ–¹æ³•è°ƒç”¨ä¹‹é—´çš„æ—¶é—´é—´éš”ã€‚ å¯ä»¥æŒ‡å®š ä»¥ __TimeSpan.FromMilliseconds(-1)__ ç¦ç”¨å®šæœŸä¿¡å·
+>>> ç¦ç”¨å®šæœŸä¿¡å·æ—¶ï¼Œåˆ°è¾¾ç­‰å¾…æ—¶é—´æ—¶,æ˜¯ä¼šæ‰§è¡Œ1æ¬¡ï¼›åªæ˜¯ç¦æ­¢äº†å®šæœŸæ‰§è¡Œ;
+>>> æ³¨æ„ï¼Œåªèƒ½æ˜¯ __TimeSpan.FromMilliseconds(-1)__, ä¸èƒ½æ˜¯ TimeSpan.FromSeconds(-1) ï¼ˆå°†æŠ›å‡ºå¼‚å¸¸ï¼‰
+
+2. ä½¿ç”¨ Actorç±» UnregisterTimerAsync å¼‚æ­¥æ–¹æ³•æ’¤é”€å®šæ—¶å™¨
+
+```csharp
+        ActorTimer timer;
+        public async Task<string> Paid()
+        {      
+            var orderId = this.Id.GetId();
+            Console.WriteLine("-----------" + orderId + "-----------------");
+            await StateManager.AddOrUpdateStateAsync(orderId, "init", (key, currentState) => "paid");
+            timer = await RegisterTimerAsync("od-" + orderId,
+                 nameof(TimerCallbackAsync),
+                 Encoding.UTF8.GetBytes(text),
+                 TimeSpan.FromSeconds(5),
+                 TimeSpan.FromSeconds(3));
+            Console.WriteLine("-----------" + timer.ActorType + "-----------------" + timer.ActorId);
+            return orderId;
+        }
+
+        public async Task TimerCallbackAsync(byte[] state)
+        {
+            var text = await this.GetStatus();
+            _logger.LogInformation($" -------{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} --  {this.Id.GetId()} -- Status: {text}  --------------");
+            if (text == "paid")
+            {
+                await UnregisterTimerAsync(this.timer);
+            }
+        }
+```
+
+#### æé†’å™¨ (Reminder)
+
+* RegisterReminderAsyncæ–¹æ³•ç±»ä¼¼äº RegisterTimerAsync ï¼Œä½†ä¸å¿…æ˜¾å¼æŒ‡å®šå›è°ƒæ–¹æ³•ã€‚
+* å®ç° IRemindable.ReceiveReminderAsync ä»¥å¤„ç†è§¦å‘çš„æé†’ã€‚
+  * ReceiveReminderAsyncè§¦å‘æé†’æ—¶è°ƒç”¨ æ–¹æ³•ã€‚ å®ƒé‡‡ç”¨ 4 ä¸ªå‚æ•°ï¼š
+    * æé†’çš„åç§°ã€‚
+    * æ³¨å†ŒæœŸé—´æä¾›çš„ç”¨æˆ·çŠ¶æ€ã€‚
+    * æ³¨å†ŒæœŸé—´æä¾›çš„å»¶æ—¶æ‰§è¡Œæ—¶é—´ã€‚
+    * æ³¨å†ŒæœŸé—´æä¾›çš„è°ƒç”¨å‘¨æœŸã€‚
+* ä½¿ç”¨ Actorç±» UnregisterReminderAsync å¼‚æ­¥æ–¹æ³•æ’¤é”€æé†’å™¨
+
+```csharp
+public class OrderStatusActor : Actor, IOrderStatusActor, IRemindable  
+{
+        IActorReminder actorReminder;
+        public async Task<string> Paid()
+        {  
+            var orderId = this.Id.GetId();
+            Console.WriteLine("-----------" + orderId + "-----------------");
+            await StateManager.AddOrUpdateStateAsync(orderId, "init", (key, currentState) => "paid");
+            this.actorReminder = await this.RegisterReminderAsync("reminder-" + orderId, null,
+                TimeSpan.FromSeconds(5),
+                TimeSpan.FromSeconds(3));
+            Console.WriteLine("-----------" + actorReminder.Name +  "-----------------" + actorReminder.State);
+            return orderId;
+        }
+
+        public async Task ReceiveReminderAsync(string reminderName, byte[] state, TimeSpan dueTime, TimeSpan period)
+        {
+            var text = await this.GetStatus();
+            _logger.LogInformation($" -------{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} --  {this.Id.GetId()} -- Status: {text}  --------------");
+            if (text == "paid")
+            {
+                await UnregisterReminderAsync(this.actorReminder);
+            }
+        }
+}
+```
+
+#### å®šæ—¶å™¨ å’Œ æé†’å™¨çš„ åŒºåˆ«
+
+* appåœæ­¢åé‡æ–°å¯åŠ¨æ—¶,å®šæ—¶å™¨éœ€è¦é‡æ–°å»ºç«‹
+* appåœæ­¢åé‡æ–°å¯åŠ¨æ—¶ï¼Œæé†’å™¨å°†ä¼šè‡ªåŠ¨æ‰§è¡Œ
+  * å°†ä¼šè‡ªåŠ¨åˆ›å»º Actorçš„å®ä¾‹ï¼Œ
+
+ä¾‹å¦‚å¦‚ä¸‹ä»£ç ï¼Œ
+
+```csharp
+public async Task<string> Paid()
+{      
+            var orderId = this.Id.GetId();
+            Console.WriteLine("-----------" + orderId + "-----------------");
+            await StateManager.AddOrUpdateStateAsync(orderId, "init", (key, currentState) => "paid");
+            this.actorReminder = await this.RegisterReminderAsync("reminder-" + orderId, null,
+                TimeSpan.FromSeconds(5),
+                TimeSpan.FromSeconds(3));
+            throw new Exception("æµ‹è¯•æé†’å™¨æ˜¯å¦ä¼šé‡å¯åè‡ªåŠ¨åˆ›å»ºActorçš„å®ä¾‹å¹¶è‡ªåŠ¨æ‰§è¡Œ");
+            return orderId;
+}
+```
+
+å»æ‰æŠ›å‡ºå¼‚å¸¸ä»£ç å¹¶é‡å¯ appåï¼Œæé†’å™¨å°†ä¼šè‡ªåŠ¨åˆ›å»º OrderStatusActor çš„å®ä¾‹ï¼ˆè®¾ç½® Id å±æ€§ï¼‰ï¼Œå¹¶æ‰§è¡Œ  ReceiveReminderAsync å¼‚æ­¥æ–¹æ³•ã€‚
+å¹¶ä¸”é‡è¦çš„æ˜¯ï¼Œ
+
+1. __<span style='color:red;'>ä¼šè¡¥å……æ‰§è¡Œä¸Šæ¬¡æ—¶é—´åˆ°æœ¬æ¬¡æ—¶é—´åº”è¯¥æ‰§è¡Œçš„æ¬¡æ•°ã€‚</span>__
+2. __<span style='color:red;'>å¦‚æœä¹‹å‰å·²ç»æ‰§è¡Œï¼Œåˆ™ä¸ä¼šç­‰å¾…å»¶æ—¶æ—¶é—´ã€‚</span>__
+
+ä¾‹å¦‚ï¼š
+è¿‡ 1 åˆ†é’Ÿé‡å¯ app, é—´éš”æ—¶é—´ä¸º 3ç§’æ—¶ï¼Œ ä¼šç«‹å³æ‰§è¡Œ 20æ¬¡æé†’å™¨æ–¹æ³•.
+
+## ç»‘å®š
+https://www.cnblogs.com/chenyishi/p/15343564.html
+
+* å¤„ç†å¤–éƒ¨äº‹ä»¶æˆ–è°ƒç”¨å¤–éƒ¨æ¥å£çš„åŠŸèƒ½å°±æ˜¯ç»‘å®š
+  * è¾“å…¥ç»‘å®š
+    * è¾“å…¥ç»‘å®šæ˜¯ç›‘å¬å¤–éƒ¨äº‹ä»¶ï¼Œè§¦å‘ä¸šåŠ¡é€»è¾‘
+  * è¾“å‡ºç»‘å®š
+    * è¾“å‡ºç»‘å®šæ˜¯è°ƒç”¨å¤–éƒ¨èµ„æº
+* ç»‘å®šå’Œå‘å¸ƒè®¢é˜…åŒºåˆ«
+  * å‘å¸ƒ/è®¢é˜…ä¾§é‡äº Dapr services ä¹‹é—´çš„å¼‚æ­¥é€šä¿¡ã€‚
+  * ç»‘å®šä¾§é‡äºè½¯ä»¶å¹³å°ä¹‹é—´çš„ç³»ç»Ÿäº’æ“ä½œæ€§ã€‚ 
+    * åœ¨ä¸åŒçš„åº”ç”¨ç¨‹åºã€æ•°æ®å­˜å‚¨å’Œå¾®æœåŠ¡åº”ç”¨ç¨‹åºä¹‹å¤–çš„æœåŠ¡ä¹‹é—´äº¤æ¢ä¿¡æ¯ã€‚
+* é€šè¿‡ç»‘å®šï¼Œå¯ä»¥é¿å…å¤šä¸ªåº”ç”¨ç¨‹åºä¹‹é—´çš„å¼ºçš„è€¦åˆ;
+
+### å·¥ä½œåŸç†
+  
+  * Dapr èµ„æºç»‘å®šéœ€è¦é€šè¿‡yamlæ–‡ä»¶å®šä¹‰ç»‘å®šç»„ä»¶ã€‚ 
+    * æ­¤ YAML æ–‡ä»¶æè¿°è¦ä¸å…¶ç»‘å®šçš„èµ„æºç±»å‹ã€‚ é…ç½®åï¼Œä½ çš„æœåŠ¡å¯ä»¥æ¥æ”¶æ¥è‡ªèµ„æºçš„äº‹ä»¶æˆ–è§¦å‘äº‹ä»¶ã€‚
+  * è¾“å…¥ç»‘å®š
+    * é€šè¿‡å¤–éƒ¨èµ„æºçš„ä¼ å…¥äº‹ä»¶è§¦å‘ä»£ç ,å³è§¦å‘æœ¬åº”ç”¨ä¸­çš„æŸä¸ªæ–¹æ³•.
+   
+    1. Dapr Sidecarè¯»å–ç»‘å®šé…ç½®æ–‡ä»¶å¹¶è®¢é˜…ä¸ºå¤–éƒ¨èµ„æºã€‚ 
+    2. å½“å¤–éƒ¨èµ„æºè§¦å‘æ—¶ï¼Œåœ¨ Dapr sidecarä¸­è¿è¡Œçš„ç»‘å®šç»„ä»¶ä¼šé€‰å–å®ƒå¹¶è§¦å‘ä¸€ä¸ªäº‹ä»¶
+    3. Dapr sidecaræ ¹æ®é…ç½®æ–‡ä»¶è°ƒç”¨æŒ‡å®šçš„æ¥å£
+    4. å¤„ç†äº‹ä»¶åï¼ŒæœåŠ¡å°†è¿”å› HTTP çŠ¶æ€ä»£ç  200 OK
+   
+  * è¾“å‡ºç»‘å®š
+    * è¾“å‡ºç»‘å®šä½¿æœåŠ¡èƒ½å¤Ÿè§¦å‘è°ƒç”¨å¤–éƒ¨èµ„æºã€‚ å³å‘å¤–å‘å¸ƒæ¶ˆæ¯.
+     
+    1. Dapr sidecarè¯»å–ç»‘å®šé…ç½®æ–‡ä»¶ï¼Œå…¶ä¸­åŒ…å«æœ‰å…³å¦‚ä½•è¿æ¥åˆ°å¤–éƒ¨èµ„æºçš„ä¿¡æ¯ã€‚
+    2. åº”ç”¨ç¨‹åºè°ƒç”¨sidecarçš„ /v1.0/bindings/sms Dapr ç»ˆç»“ç‚¹ã€‚ åœ¨è¿™ç§æƒ…å†µä¸‹ï¼Œå®ƒä½¿ç”¨ HTTP POST æ¥è°ƒç”¨ APIã€‚ è¿˜å¯ä»¥ä½¿ç”¨ gRPCã€‚
+    3. Dapr sidecarçš„ç»‘å®šç»„ä»¶ä¼šè°ƒç”¨å¤–éƒ¨æ¶ˆæ¯ç³»ç»Ÿæ¥å‘é€æ¶ˆæ¯ã€‚ æ¶ˆæ¯å°†åŒ…å« POST è¯·æ±‚ä¸­ä¼ é€’çš„è´Ÿè½½ã€‚
+
+  * æ³¨æ„ï¼Œç»„ä»¶åç§°(æœ¬ä¾‹å­ä¸­ä¸º rabbitbinding )  åº”è¯¥å’Œ webapiæ¥å£åç§° (æ§åˆ¶å™¨ç±»åç§°ä¸º RabbitBindingController) ç›¸åŒ
+    * å¦‚æœå¤šä¸ªappä¸­æœ‰ç›¸åŒçš„ åç§°ä¸º RabbitBindingController æ§åˆ¶å™¨ç±», åˆ™éƒ½å°†è¿›è¡Œç»‘å®šï¼›
+      * ç›®å‰ RabbitMq ä½¿ç”¨è½®è¯¢æœºåˆ¶åˆ†å‘é˜Ÿåˆ—æ¶ˆæ¯åˆ°å„ä¸ªç»‘å®šçš„ app
+  
+  #### å®ä¾‹
+
+1. å®šä¹‰ RabbitBinding ç»„ä»¶.
+
+æ ¼å¼: https://docs.dapr.io/reference/components-reference/supported-bindings/rabbitmq/
+
+```yaml
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: RabbitBinding
+spec:
+  type: bindings.rabbitmq
+  version: v1
+  metadata:
+  - name: queueName   ## é˜Ÿåˆ—åç§°
+    value: queue1 
+  - name: host        ## RabbitMqçš„è¿æ¥å­—ç¬¦ä¸²
+    value: amqp://admin:123456@127.0.0.1:5672
+  - name: durable    ## åªå¯¹è¾“å‡ºç»‘å®šæœ‰ç”¨, Tells RabbitMQ to persist message in storageï¼Œ é»˜è®¤æ˜¯ false
+    value: true
+  - name: deleteWhenUnused 
+    value: false
+  - name: ttlInSeconds  
+    value: 60
+  - name: prefetchCount
+    value: 0
+  - name: exclusive
+    value: false
+  - name: maxPriority
+    value: 5
+```
+
+1. å¤„ç†ä»£ç 
+
+```csharp
+ [Route("[controller]")]
+    [ApiController]
+    public class RabbitBindingController : ControllerBase
+    {
+        [HttpGet]
+        public async Task<ActionResult> GetAsync([FromServices] DaprClient daprClient)
+        {            
+            await daprClient.InvokeBindingAsync("RabbitBinding", "create", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            return Ok();
+        }
+        [HttpPost]
+        public async Task<ActionResult> Post()
+        {
+           Stream stream = Request.Body;
+           byte[] buffer = new byte[Request.ContentLength.Value];
+           stream.Position = 0L;
+           await stream.ReadAsync(buffer, 0, buffer.Length);
+           string content = Encoding.UTF8.GetString(buffer);
+           Console.WriteLine(".............binding............." + content);
+           return Ok();
+        }
+    }
+```
+
+* daprClient.InvokeBindingAsync(string, string, string)
+  * è°ƒç”¨ä¸€ä¸ªè¾“å‡ºç»‘å®š.
+* æœ¬ä¾‹å­ä¸­ï¼Œ
+   http://localhost:3501/v1.0/invoke/frontend/method/RabbitBinding åˆ›å»ºè¾“å‡ºç»‘å®šå, ä¼šç«‹å³è¢«æœ¬ç±»ä¸­çš„è¾“å‡ºç»‘å®šæ‰€å¤„ç†;

@@ -18,20 +18,18 @@ namespace E2_FrontEnd.Controllers
         [HttpGet("paid/{orderId}")]
         public async Task<ActionResult> PaidAsync(string orderId)
         {
-            var actorId = new ActorId("myid-" + orderId);
+            var actorId = new ActorId("od" + orderId);
             var proxy = ActorProxy.Create<IOrderStatusActor>(actorId, nameof(OrderStatusActor));
-            var result = await proxy.Paid(orderId);
-            var ptimer = ActorProxy.Create<ITimerActor>(actorId, nameof(OrderStatusActor));
-            await ptimer.StartTimeAsyc(actorId.GetId(), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            var result = await proxy.Paid();
             return Ok(result);
         }
 
         [HttpGet("get/{orderId}")]
         public async Task<ActionResult> GetAsync(string orderId)
         {
-            var actorId = new ActorId("myid-" + orderId);
+            var actorId = new ActorId("od" + orderId);
             var proxy = ActorProxy.Create<IOrderStatusActor>(actorId, nameof(OrderStatusActor));
-            return Ok(await proxy.GetStatus(orderId));
+            return Ok(await proxy.GetStatus());
         }
     }
 }

@@ -9,7 +9,7 @@ builder.Services.AddActors(options =>
 {
     options.Actors.RegisterActor<OrderStatusActor>();
 
-    options.ActorIdleTimeout = TimeSpan.FromMinutes(60);
+    options.ActorIdleTimeout = TimeSpan.FromMinutes(1);
     options.ActorScanInterval = TimeSpan.FromSeconds(30);
     options.DrainOngoingCallTimeout = TimeSpan.FromSeconds(60);
     options.DrainRebalancedActors = true;

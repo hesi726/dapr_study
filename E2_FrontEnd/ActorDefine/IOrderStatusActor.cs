@@ -4,8 +4,8 @@ namespace E2_FrontEnd.ActorDefine
 {
     public interface IOrderStatusActor : IActor
     {
-        Task<string> Paid(string orderId);
+        Task<string> Paid();
 
-        Task<string> GetStatus(string orderId);
+        Task<string> GetStatus();
     }
 }

@@ -1,3 +1,5 @@
+using Dapr.Client;
+using Dapr.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -21,6 +23,12 @@ namespace E2_BackEnd
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>().UseUrls("http://*:5000");
+                })
+                .ConfigureAppConfiguration(config =>
+                {
+                    var daprClient = new DaprClientBuilder().Build();
+                    var secretsDescriptors = new List<DaprSecretDescriptor> { new DaprSecretDescriptor("RabbitMQConnectStr") };
+                    config.AddDaprSecretStore("secrets01", secretsDescriptors, daprClient);
                 });
     }
 }

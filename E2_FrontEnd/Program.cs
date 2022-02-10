@@ -1,7 +1,15 @@
+using Dapr.Client;
+using Dapr.Extensions.Configuration;
 using E2_FrontEnd.ActorDefine;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseUrls("http://*:5001");
+builder.WebHost.ConfigureAppConfiguration(config=> {
+    var daprClient = new DaprClientBuilder().Build();
+    var secretsDescriptors = new List<DaprSecretDescriptor> { new DaprSecretDescriptor("RabbitMQConnectStr") };
+    config.AddDaprSecretStore("secrets01", secretsDescriptors, daprClient);    
+});
+
 
 // Add services to the container.
 builder.Services.AddControllers().AddDapr();

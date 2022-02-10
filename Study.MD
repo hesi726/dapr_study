@@ -810,3 +810,225 @@ spec:
   * 调用一个输出绑定.
 * 本例子中，
    http://localhost:3501/v1.0/invoke/frontend/method/RabbitBinding 创建输出绑定后, 会立即被本类中的输出绑定所处理;
+
+
+## Secrets 敏感信息存储
+
+支持的存储解决方案: 
+https://docs.dapr.io/zh-hans/reference/components-reference/supported-secret-stores/
+
+一个统一的地方存放那个所有的敏感信息，例如数据库连接字符串、密钥等等;
+
+
+* 使用 Dapr 的密钥存储构建块通常涉及以下步骤：
+1. 设置一个特定的密钥存储解决方案的组件。
+2. 在应用程序代码中使用 Dapr Secrets API 获取密钥。
+3. 在Dapr的Component文件中引用密钥
+
+* 工作原理：
+1. 服务A调用 Dapr Secrets API，提供要检索的Serects的名称和要查询的项名字。
+> http://localhost:\<dapr-port>/v1.0/secrets/\<store-name>/\<name>?\<metadata>
+>> \<dapr-port> 指定 Dapr sidecar 侦听的端口号。
+>> \<store-name> 指定 Dapr Secrets存储的名称
+>> \<name> 指定要检索的密钥的名称。
+>> \<metadata> 提供Secrets的其他信息。 此段是可选的，每个Secrets存储的元数据属性不同。 有关元数据属性详细信息
+2. Dapr sidecar 从Secrets存储中检索指定的机密。
+3. Dapr sidecar 将Secrets信息返回给服务。
+
+### 实际例子(使用本地json文件存放连接字符串)
+
+* 连接字符串Json文件,文件位置： C:\Users\dai_wei\.dapr\components\secrets01.json
+```json
+{
+    "RabbitMQConnectStr": "amqp://admin:123456@127.0.0.1:5672"
+}
+```
+* Secrets定义文件: 
+```yaml
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: secrets01
+spec:
+  type: secretstores.local.file
+  version: v1
+  metadata:
+  - name: secretsFile
+    value: C:\Users\username\.dapr\components\secrets01.json
+  - name: nestedSeparator
+    value: ":"
+```   
+* 访问 secrets的C#代码
+```csharp
+        [HttpGet]
+        public async Task<ActionResult> GetAsync()
+        {
+            Dictionary<string, string> secrets = await _daprClient.GetSecretAsync("secrets01", "RabbitMQConnectStr");
+            return Ok(secrets);
+        }
+``` 
+> Api定义： 
+`public abstract Task<Dictionary<string, string>> GetSecretAsync(string storeName, string key, IReadOnlyDictionary<string, string> metadata = null, CancellationToken cancellationToken = default);`
+
+* 和 NetCore Configuration 集成
+
+上面代码中，在控制器中访问已经太晚,因为连接字符串应该在 AddDbContext之前就应该已经配置好;  
+需要提前到 Configution 中定义;
+
+1. 首先引入nuget包 Dapr.Extensions.Configuration 
+> dotnet add package nuget包Dapr.Extensions.Configuration   
+2. 在配置 WebHost 的 WebAppblication时编写如下代码 （Net6形式的代码)
+```csharp
+var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.UseUrls("http://*:5001");
+builder.WebHost.ConfigureAppConfiguration(config=> {
+    var daprClient = new DaprClientBuilder().Build();
+    var secretsDescriptors = new List<DaprSecretDescriptor> { new DaprSecretDescriptor("RabbitMQConnectStr") };
+    config.AddDaprSecretStore("secrets01", secretsDescriptors, daprClient);      
+});
+``` 
+3. __注意，上述代码中，会直接将 secrets01组件中的 RabbitMQConnectStr 键值对 存放到 Configuration中。__
+> configuration["RabbitMQConnectStr"]  形式访问 RabbitMQConnectStr 的值.
+
+* 其他组件引用 Secrets组件的值
+
+很明显,有了 Secrets组件后,其他组件不应该自行定义数据库连接字符串等，而应该引用 secrets组件中的定义;
+
+rabbitbinding.yaml 可以修改为如下形式，以便引用 secrets01中的 RabbitMQConnectStr  
+```yaml
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: RabbitBinding
+spec:
+  type: bindings.rabbitmq
+  version: v1
+  metadata:
+  - name: queueName
+    value: queue1
+  - name: host
+    secretKeyRef:
+      name: RabbitMQConnectStr
+      key: RabbitMQConnectStr
+  - name: durable
+    value: true
+  - name: deleteWhenUnused
+    value: false
+  - name: ttlInSeconds
+    value: 60
+  - name: prefetchCount
+    value: 0
+  - name: exclusive
+    value: false
+  - name: maxPriority
+    value: 5
+auth:
+  secretStore: secrets01
+```
+
+替换了如下定义，并添加了 auth 节点定义.
+```yaml
+- name: host 
+  value: amqp://admin:123456@192.168.43.101:5672
+```  
+
+* secrets授权访问
+
+跳过. 
+
+
+## 服务监测
+
+* 性能指标
+* 链路跟踪
+* 运行状况
+* 日志记录
+
+### Dapr 可观测性模块
+1. 将服务监测与应用程序分离。
+2. 自动捕获由 Dapr sidecar 和 Dapr 服务生成的流量。
+3. 还公开性能指标、资源利用率和系统的运行状况。 
+4. 监测测以开放标准格式发布，使信息能够馈入到选择的监视后端。
+5. 当 Dapr 获取监控数据时，应用程序不需要知道如何实现可观测性。 应用程序无需引用库或实现自定义检测代码。 
+6. Dapr可以使开发人员专注于构建业务逻辑，而不是监测。
+
+### DaprSidecar:
+1. 支持监测功能。 
+   > 当服务间通信时，Dapr sidecar 会截获流量并提取跟踪、指标和日志记录信息。 
+   > 监测以开放标准格式发布。 默认情况下，Dapr 支持 OpenTelemetry 和 Zipkin。
+
+### Dapr收集器：
+1. 可以将遥测数据发布到不同的后端监视工具。 这些工具可以查询分析 Dapr 遥测数据
+
+### Zipkin服务跟踪
+
+* dpar默认支持的分布式服务跟踪系统；
+* Zipkin服务是在初始化dapr的时候，启动的一个docker容器
+  > http://localhost:9411/zipkin/ 默认的 zipkin访问URL
+  
+c:\users\dai_wei\.dapr\config.yaml 中指定了 zipkin的配置信息
+```yaml
+apiVersion: dapr.io/v1alpha1
+kind: Configuration
+metadata:
+  name: daprConfig
+spec:
+  tracing:
+    samplingRate: "1"
+    zipkin:
+      endpointAddress: http://localhost:9411/api/v2/spans
+```
+
+### Dapr性能收集
+
+* 默认下 Dapr SideCar 会开放 9000端口，向外暴露性能收集数据. 
+* 性能收集数据默认为 Prometheus 格式
+> 可以通过参数修改性能收集端口    --metrics-port 9091
+> dapr run --dapr-http-port 3511 --app-port 5000 --app-id backend dotnet  .\BackEnd\bin\Debug\net5.0\BackEnd.dll --metrics-port 9090
+
+http://10.20.14.6:9000  （不能使用 127.0.0.1)
+
+返回说明
+```txt
+dapr_http_client_completed_count{app_id="frontend",method="GET",path="RabbitBinding",status="200"} 29  
+dapr_http_client_completed_count{app_id="frontend",method="POST",path="RabbitBinding",status="200"} 15
+dapr_http_client_roundtrip_latency_bucket{app_id="frontend",method="GET",path="RabbitBinding",status="200",le="1"} 0
+dapr_http_client_roundtrip_latency_bucket{app_id="frontend",method="GET",path="RabbitBinding",status="200",le="2"} 14
+dapr_http_client_roundtrip_latency_bucket{app_id="frontend",method="GET",path="RabbitBinding",status="200",le="3"} 20
+dapr_http_client_roundtrip_latency_bucket{app_id="frontend",method="GET",path="RabbitBinding",status="200",le="4"} 23
+dapr_http_client_roundtrip_latency_bucket{app_id="frontend",method="GET",path="RabbitBinding",status="200",le="5"} 25
+dapr_http_client_roundtrip_latency_bucket{app_id="frontend",method="GET",path="RabbitBinding",status="200",le="6"} 26
+dapr_http_client_roundtrip_latency_bucket{app_id="frontend",method="GET",path="RabbitBinding",status="200",le="8"} 26
+dapr_http_client_roundtrip_latency_bucket{app_id="frontend",method="GET",path="RabbitBinding",status="200",le="10"} 26
+dapr_http_client_roundtrip_latency_bucket{app_id="frontend",method="GET",path="RabbitBinding",status="200",le="13"} 26
+dapr_http_client_roundtrip_latency_bucket{app_id="frontend",method="GET",path="RabbitBinding",status="200",le="16"} 26
+dapr_http_client_roundtrip_latency_bucket{app_id="frontend",method="GET",path="RabbitBinding",status="200",le="10000"} 29
+dapr_http_client_roundtrip_latency_bucket{app_id="frontend",method="GET",path="RabbitBinding",status="200",le="100000"} 29
+dapr_http_client_roundtrip_latency_bucket{app_id="frontend",method="GET",path="RabbitBinding",status="200",le="+Inf"} 29
+dapr_http_client_roundtrip_latency_bucket{app_id="frontend",method="POST",path="RabbitBinding",status="200",le="1"} 11
+dapr_http_client_roundtrip_latency_bucket{app_id="frontend",method="POST",path="RabbitBinding",status="200",le="1000"} 15
+dapr_http_client_roundtrip_latency_bucket{app_id="frontend",method="POST",path="RabbitBinding",status="200",le="100000"} 15
+dapr_http_client_roundtrip_latency_bucket{app_id="frontend",method="POST",path="RabbitBinding",status="200",le="+Inf"} 15
+```
+通过 GET  请求 frontend RabbitBinding 29次,其中小于 2ms的响应为 14次.
+通过 POST 请求 frontend RabbitBinding 15次,其中小于 1ms的响应为 11次.
+
+### dapr 仪表盘（显示配置信息）
+
+dapr dashboard 命令行启动仪表盘。
+
+- 默认使用 8080端口，
+- 显示有关 Dapr 应用程序、组件和配置的状态信息 
+
+## 调试
+
+1. 启动 daprd (即 SideBar)
+  daprd -dapr-http-port 3501 -app-port 5001  -app-id frontend -placement-host-address localhost:6050 -components-path C:\\Users\\chesterychen\\.dapr\\components
+  -app-port 应该是项目的HTTP 监听端口.
+
+2. 在 Vs中启动项目.  
+
+
+## K8S运行Dapr
+
+<img src='https://img2020.cnblogs.com/blog/1033233/202109/1033233-20210929234430902-1712753654.png'>
